@@ -8,4 +8,15 @@ This code is for our paper titled: **GestSync: Determining who is speaking witho
 | Coming soon |    Coming soon | Coming soon | 
 <br />
 
-**More details coming soon...**
+------
+# Highlights
+
+- The trained network can be used for 2 tasks:
+  - **Synchronisation:** Predicting the temporal lags between the audio and visual streams in a video solely based on gestures.
+  - **Active Speaker Detection:** Determining "who is speaking" in a multi-speaker scenario without looking at their faces.
+- Works in unconstrained settings for any speaker in any language.
+- Wider applications: Since the model does not require face input, it eliminates the problem of corrupted, occluded or invisible face or lip regions. 
+- Complete training and inference pipelines, along with pre-trained models will be released soon. 
+
+------
+# More details coming soon...
