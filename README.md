@@ -36,7 +36,6 @@ Install the required packages (it is recommended to craete a new environment)
     python -m venv env_gestsync
     source env_gestsync/bin/activate
     pip install -r requirements.txt
-    sudo apt-get install ffmpeg
 
 ------
 Pretrained models
@@ -88,9 +87,7 @@ Coming soon!
 Training
 -----
 
-#### Pre-processing
-
-#### Train the model
+Coming soon!
 
 ---
 Licence and Citation
