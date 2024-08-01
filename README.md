@@ -31,11 +31,15 @@ Clone the repository
 
     git clone https://github.com/Sindhu-Hegde/gestsync.git
 
-Install the required packages (it is recommended to craete a new environment)
+Install the required packages (it is recommended to create a new environment)
 
     python -m venv env_gestsync
     source env_gestsync/bin/activate
     pip install -r requirements.txt
+
+Activate the environment
+
+    source env_gestsync/bin/activate
 
 ------
 Pretrained models
