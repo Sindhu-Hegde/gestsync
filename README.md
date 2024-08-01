@@ -9,9 +9,10 @@ This code is for our paper titled: **GestSync: Determining who is speaking witho
 | [Paper](https://arxiv.org/pdf/2310.05304) | [Website](https://www.robots.ox.ac.uk/~vgg/research/gestsync/) | [Video](https://youtu.be/AAdicSpgcAg) | 
 <br />
 
+
 <p align="center">
-    <img src="https://drive.google.com/file/d/1G1ULdkn5Z1e9omN7u3ybly8te-U4FrQc/view?usp=sharing">
-</p> 
+    <img src="assets/teaser.png"/>
+</p>
 
 ------
 Highlights
