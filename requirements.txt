@@ -1,0 +1,17 @@
+decord==0.5.2
+ffmpeg==1.4
+librosa==0.9.2
+mediapipe==0.9.1.0
+numpy==1.26.4
+opencv-python==4.9.0.80
+opencv-python-headless==4.10.0.84
+protobuf==3.20.3
+protobuf-to-dict==0.1.0
+protobuf3-to-dict==0.1.5
+scikit-learn==1.5.1
+torch==1.10.0
+torchvision==0.11.1
+tqdm==4.66.4
+ultralytics==8.2.70
+ultralytics-thop==2.0.0
+urllib3==1.26.19
