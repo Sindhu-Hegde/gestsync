@@ -61,7 +61,7 @@ Give any video where the speaker's gestures are visible and use our network to p
 
     python inference_syncoffset.py --checkpoint_path=<path_to_model> --video_path=<path_to_video>
 
-Following demo videos are   videos
+Following demo videos are available for a quick test: 
 
 
 | Video path | Actual offset  |
