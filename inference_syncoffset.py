@@ -3,11 +3,8 @@ import os, subprocess
 
 import numpy as np
 import cv2
-
 import librosa
-
 import torch
-# from torch.nn import functional as F
 
 from utils.audio_utils import *
 from utils.inference_utils import *
@@ -15,14 +12,10 @@ from sync_models.gestsync_models import *
 
 from tqdm import tqdm
 from scipy.io.wavfile import write
-
 import mediapipe as mp
 from protobuf_to_dict import protobuf_to_dict
 mp_holistic = mp.solutions.holistic
-# import yolov5
 from ultralytics import YOLO
-
-# import decord
 from decord import VideoReader, cpu
 
 import warnings
@@ -32,18 +25,18 @@ warnings.filterwarnings("ignore", category=UserWarning)
 
 parser = argparse.ArgumentParser(description='Inference code for GestSync to sync-correct the video')
 
-parser.add_argument('--checkpoint_path', required=True, help='Path of the trained model', default=None, type=str)
-parser.add_argument('--video_path', default=None, required=True)
-parser.add_argument('--num_avg_frames', type=int, default=50, choices=range(25, 1000))
-parser.add_argument('--use_rgb', default=True)
-parser.add_argument('--result_path', default="results")
+parser.add_argument('--checkpoint_path', required=True, help='Path of the trained model', type=str)
+parser.add_argument('--video_path', required=True, help='Path of the input video', type=str)
+parser.add_argument('--num_avg_frames', help='Number of frames to average', default=50, type=int)
+parser.add_argument('--use_rgb', help='Type of the model to be used', default=True)
+parser.add_argument('--result_path', help='Path of the result folder', default="results", type=str)
 
-parser.add_argument('--height', type=int, default=270)
-parser.add_argument('--width', type=int, default=480)
-parser.add_argument('--fps', type=int, default=25)
-parser.add_argument('--sample_rate', type=int, default=16000)
+parser.add_argument('--height', default=270, type=int)
+parser.add_argument('--width', default=480, type=int)
+parser.add_argument('--fps', default=25, type=int)
+parser.add_argument('--sample_rate', default=16000, type=int)
 parser.add_argument('--n_negative_samples', type=int, default=100)
-parser.add_argument('--batch_size', type=int, default=12)
+parser.add_argument('--batch_size', default=12, type=int)
 
 args = parser.parse_args()
 
@@ -173,6 +166,28 @@ def preprocess_video(path, result_folder, padding=20):
 
 	return wav_file, fps, video_output
 
+def resample_video(video_file, video_fname, result_folder):
+
+	'''
+	This function resamples the video to 25 fps
+
+	Args:
+		- video_file (string) : Path of the input video file
+		- video_fname (string) : Name of the input video file
+		- result_folder (string) : Path of the folder to save the resampled video
+	Returns:
+		- video_file_25fps (string) : Path of the resampled video file
+	'''
+	video_file_25fps = os.path.join(result_folder, '{}.mp4'.format(video_fname))
+	
+	# Resample the video to 25 fps
+	command = ("ffmpeg -hide_banner -loglevel panic -y -i {} -q:v 1 -filter:v fps=25 {}".format(video_file, video_file_25fps))
+	from subprocess import call
+	cmd = command.split(' ')
+	print('Resampled the video to 25 fps: {}'.format(video_file_25fps))
+	call(cmd)
+
+	return video_file_25fps
 
 def load_checkpoint(path, model):
 	'''
@@ -345,7 +360,7 @@ def load_rgb_masked_frames(input_frames, kp_dict, stride=1, window_frames=25, wi
 
 		if face is None:
 			img = cv2.resize(img, (width, height))
-			masked_img = cv2.rectangle(img, (0,0), (width,120), (0,0,0), -1)
+			masked_img = cv2.rectangle(img, (0,0), (width,110), (0,0,0), -1)
 		else:
 			face_kps = []
 			for idx in range(len(face)):
@@ -386,7 +401,6 @@ def load_spectrograms(wav_file, num_frames, window_frames=25, stride=4):
 	Args:
 		- wav_file (string) : Path of the extracted audio file
 		- num_frames (int) : Number of frames to extract
-		- result_folder (string) : Path of the folder to save the extracted audio file
 		- window_frames (int) : Number of frames in each window that is given as input to the model
 		- stride (int) : Stride to extract the audio frames
 	Returns:
@@ -543,7 +557,7 @@ def generate_video(frames, audio_file, video_fname):
 	os.remove(fname)
 	os.remove(no_sound_video)
 	
-	print("Successfully generated the video:", video_output)
+	return video_output
 
 def sync_correct_video(frames, wav_file, offset, result_folder, sample_rate=16000, fps=25):
 
@@ -579,18 +593,22 @@ def sync_correct_video(frames, wav_file, offset, result_folder, sample_rate=1600
 	# print("Corrected frames: ", corrected_frames.shape)
 
 	corrected_video_path = os.path.join(result_folder, "result_sync_corrected")
-	generate_video(corrected_frames, wav_file, corrected_video_path)
+	video_output = generate_video(corrected_frames, wav_file, corrected_video_path)
 
-	
-
+	return video_output
 
 if __name__ == "__main__":
 
 	# Set the video path
-	vid_path_orig = args.video_path 
+	orig_vid_path = args.video_path 
+
+	# Check if the number of frames to average is set to a minimum of 25 frames
+	if args.num_avg_frames<25:
+		print("Number of frames to average need to be set to a minimum of 25 frames. Atleast 1-second context is needed for the model. Please change the num_avg_frames and try again...")
+		exit(0)
 	
 	# Create folders to save the inputs and results
-	result_folder = os.path.join(args.result_path, vid_path_orig.split("/")[-1].split(".")[0])
+	result_folder = os.path.join(args.result_path, orig_vid_path.split("/")[-1].split(".")[0])
 	if not os.path.exists(result_folder): 
 		os.makedirs(result_folder)
 
@@ -603,26 +621,25 @@ if __name__ == "__main__":
 		os.makedirs(result_folder_output)
 
 	# Copy the input video to the result folder
-	subprocess.call('rsync -az {} {}'.format(vid_path_orig, result_folder), shell=True)
+	subprocess.call('rsync -az {} {}'.format(orig_vid_path, result_folder), shell=True)
 
 	# Pre-process the input video
-	wav_file, fps, vid_path_processed = preprocess_video(vid_path_orig, result_folder_input)
+	wav_file, fps, vid_path_processed = preprocess_video(orig_vid_path, result_folder_input)
 	print("FPS of video: ", fps)
 
 	# Resample the video to 25 fps if it is not already 25 fps
 	if fps!=25:
-		vid_path = os.path.join(result_folder_input, "preprocessed_video_25fps.mp4")
-		command = ("ffmpeg -hide_banner -loglevel panic -y -i {} -filter:v fps=25 {}".format(vid_path_processed, vid_path))
-		from subprocess import call
-		cmd = command.split(' ')
-		print('Resampled the video to 25 fps: {}'.format(vid_path))
-		call(cmd)
+		vid_path = resample_video(vid_path_processed, "preprocessed_video_25fps", result_folder_input)
+		orig_vid_path_25fps = resample_video(orig_vid_path, "input_video_25fps", result_folder_input)
 	else:
 		vid_path = vid_path_processed
+		orig_vid_path_25fps = orig_vid_path
 
-	# Load the video frames
+	# Load the original video frames (before pre-processing) - Needed for the final sync-correction 
+	orig_frames = load_video_frames(orig_vid_path_25fps)
+		
+	# Load the pre-processed video frames
 	frames = load_video_frames(vid_path)
-	orig_frames = frames.copy()
 	
 	# Check if the number of frames is enough to average the scores
 	if len(frames) < args.num_avg_frames:
@@ -694,9 +711,6 @@ if __name__ == "__main__":
 	video_emb = torch.cat(video_emb, dim=0)
 	video_feat = torch.cat(video_feat, dim=0)
 
-	# print("Audio emb: ", audio_emb.shape)
-	# print("Video emb: ", video_emb.shape)
-
 	# L2 normalize the embeddings
 	video_emb = torch.nn.functional.normalize(video_emb, p=2, dim=1)
 	audio_emb = torch.nn.functional.normalize(audio_emb, p=2, dim=1)
@@ -715,4 +729,5 @@ if __name__ == "__main__":
 	print("Predicted offset: ", pred_offset)
 
 	# Generate and save the sync-corrected video
-	sync_correct_video(orig_frames, wav_file, pred_offset, result_folder_output)
+	video_output = sync_correct_video(orig_frames, wav_file, pred_offset, result_folder_output)
+	print("Successfully generated the video:", video_output)

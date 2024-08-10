@@ -85,7 +85,25 @@ Example run:
 
 ### Predicting "who is speaking" in a multi-speaker scene
 
-Coming soon!
+Our model can be used to predict "who is speaking" based on gestures in a multi-speaker video (no face needed). Give any video with two or more speakers with visible gestures in the scene and use our network to predict the active speaker and obtain the video output with the bounding box as shown below.
+
+<p align="center">
+  <img src="assets/asd_1.png" width="45%"/>
+  <img src="assets/asd_2.png" width="45%"/>
+</p>   
+
+Example run:
+
+    python inference_activespeaker.py --checkpoint_path=checkpoints/model_rgb.pth --video_path=samples/asd_sample_1.mp4 --global_speaker=True
+
+All the input and output files are saved (by default) in  `results`  folder. The result directory can be specified in arguments, similar to several other available options. The input file can be any video file with atleast two speakers with visible gestures. The code will pre-process the video (pre-processed files will be saved in  `results/input`  folder) and generate the video with the bounding-box ob the active speaker (result files will be saved in  `results/output`  folder). The above code predicts a single active speaker for the entire input video.
+
+To obtain more fine-grained per-frame results, set the parameter `global_speaker=False` and specify the `num_avg_frames` to indicate number of video frames used to average the scores. Higher the number of average frames, better the results. To obtain a more accurate offset prediction, give a longer video as input and set the `num_avg_frames` to be higher (example 100).  
+
+Example run:
+
+    python inference_activespeaker.py --checkpoint_path=checkpoints/model_rgb.pth --video_path=samples/asd_sample_2.mp4 --global_speaker=False --num_avg_frames=50
+
 
 ---
 Training
