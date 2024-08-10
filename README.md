@@ -96,7 +96,7 @@ Our model can be used to predict "who is speaking" based on gestures in a multi-
   <img src="assets/asd_2.png" width="45%"/>
 </p>   
 
-Following demo videos are available for a quick test: `samples/asd_sample_1`, `samples/asd_sample_1`
+Following demo videos are available for a quick test: `samples/asd_sample_1.mp4`, `samples/asd_sample_1.mp4`
 
 
 Example run:
