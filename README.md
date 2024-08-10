@@ -66,14 +66,14 @@ Following demo videos are available for a quick test:
 
 | Video path | Actual offset  |
 |:--:|:--:|
-| samples/sample_1.mp4 | 0 |
-| samples/sample_2.mp4 | 25 |
-| samples/sample_3.mp4 | -15 |
+| samples/sync_sample_1.mp4 | 0 |
+| samples/sync_sample_2.mp4 | 25 |
+| samples/sync_sample_3.mp4 | -15 |
 
 
 Example run:
 
-    python inference_syncoffset.py --checkpoint_path=checkpoints/model_rgb.pth --video_path=samples/sample_1.mp4
+    python inference_syncoffset.py --checkpoint_path=checkpoints/model_rgb.pth --video_path=samples/sync_sample_1.mp4
     
 All the input and output files are saved (by default) in `results` folder. The result directory can be specified in arguments, similar to several other available options. The input file can be any video file with a single speaker and visible gestures. The code will pre-process the video (pre-processed files will be saved in  `results/input` folder) and  generate the sync-corrected video (result files will be saved in `results/output` folder).
 
@@ -81,7 +81,7 @@ The optional parameter `num_avg_frames` specifies the number of video frames use
 
 Example run:
 
-    python inference_syncoffset.py --checkpoint_path=checkpoints/model_rgb.pth --video_path=samples/sample_2.mp4 --num_avg_frames=75
+    python inference_syncoffset.py --checkpoint_path=checkpoints/model_rgb.pth --video_path=samples/sync_sample_2.mp4 --num_avg_frames=75
 
 ### Predicting "who is speaking" in a multi-speaker scene
 
