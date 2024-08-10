@@ -87,10 +87,17 @@ Example run:
 
 Our model can be used to predict "who is speaking" based on gestures in a multi-speaker video (no face needed). Give any video with two or more speakers with visible gestures in the scene and use our network to predict the active speaker and obtain the video output with the bounding box as shown below.
 
+
+    python inference_activespeaker.py --checkpoint_path=<path_to_model> --video_path=<path_to_video>
+
+
 <p align="center">
   <img src="assets/asd_1.png" width="45%"/>
   <img src="assets/asd_2.png" width="45%"/>
 </p>   
+
+Following demo videos are available for a quick test: `samples/asd_sample_1`, `samples/asd_sample_1`
+
 
 Example run:
 
