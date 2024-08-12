@@ -15,7 +15,7 @@ def load_args():
     parser.add_argument('--similarity_type', default="mean", required=False, help="Spatial similarity to be used [mean or max] for keypoint-vector representation model")
         
     # Checkpoint params
-    parser.add_argument('--checkpoint_dir', help='Save checkpoints to this directory', default='checkpoints/rgb', required=False, type=str)
+    parser.add_argument('--checkpoint_dir', help='Save checkpoints to this directory', default='checkpoints', required=False, type=str)
     parser.add_argument('--checkpoint_path', help='Resume the model from this checkpoint', default=None, type=str)
 
     # Frame params
@@ -36,8 +36,8 @@ def load_args():
     parser.add_argument('--n_gpu', type=int, default=1, required=False, help='Number of GPUs for non-distributed training')
 
     # Data-path params
-    parser.add_argument('--data_path_lrs3_rgb', type=str, default="/scratch/shared/beegfs/shared-datasets/LRS/LRS3/lrs3_full_crops_270/pretrain/vid/")
-    parser.add_argument('--data_path_lrs3_kps', type=str, default="/scratch/shared/beegfs/sindhu/datasets/hands2speech/lrs3_full_crops_270/mediapipe_kps_reduced_size/")    
+    parser.add_argument('--data_path_videos', type=str, default="preprocess/preprocessed_videos")
+    parser.add_argument('--data_path_kps', type=str, default="preprocess/keypoints")    
 
     # Distributed training
     parser.add_argument('--use_dist_training', default=False, type=str, help="Use distributed training with multiple GPUs for faster training")

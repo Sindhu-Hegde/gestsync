@@ -49,7 +49,7 @@ Download the trained models and save in `checkpoints` folder
 | Model  | Description |  Link to the model | 
 | :-------------: | :---------------: | :---------------: |
 | RGB model  | Weights of the RGB-based GestSync model | [Link](https://drive.google.com/drive/folders/1F35PfHGJ_guanl_tCV0CX9jNr9kY6359?usp=sharing) |---
-| Keypoint model  | Weights of the keypoint-based GestSync model | TBD |
+
 ---
 Inference
 -----
@@ -116,7 +116,65 @@ Example run:
 Training
 -----
 
-Coming soon!
+
+### Preprocess the data
+Our model is trained using the [LRS3](https://www.robots.ox.ac.uk/~vgg/data/lip_reading/lrs3.html) dataset. Adapting for other datasets might involve small modifications.
+
+##### Dataset folder structure
+```
+data_root 
+├── all video files (mp4/avi)  
+```
+
+##### Preprocess the dataset
+
+Pre-processing the data involves two steps: 
+1. Obtaining the video and audio crops (based on scene detection and person detection)
+2. Extracting the keypoints 
+
+```
+cd preprocess
+python preprocess_videos.py --data_root=<dataset-path> --preprocessed_root=<path-to-save-the-preprocessed-data> --temp_dir=<path-to-save-intermediate-results> --metadata_root=<path-to-save-the-metadata>
+python extract_kps.py --data_path=<path-to-save-the-preprocessed-data> --result_path=<path-to-save-the-keypoints>
+```
+
+Additional options like `rank` and `nshard` to use parallel processing can be set if needed.
+
+##### Preprocessed  folder structure
+
+The final folder structure for train and validation files after pre-processing is shown below.
+```
+preprocessed_root (path of the pre-processed videos) 
+├── train
+|	├── list of video-ids
+|	│   ├── *.avi (extracted person track video for each scene)
+|	|	├── *.wav (extracted person track audio for each scene)
+├── val
+|	├── list of video-ids
+|	│   ├── *.avi (extracted person track video for each scene)
+|	|	├── *.wav (extracted person track audio for each scene)
+```
+
+```
+result_path (path of the extracted keypoints) 
+├── train
+|	├── list of video-ids
+|	│   ├── *.pkl (extracted keypoint file for each person track)
+├── val
+|	├── list of video-ids
+|	│   ├── *.pkl (extracted keypoint file for each person track)
+```
+
+### Train the model
+
+Navigate to the main directory: `cd ..`
+
+The GestSync model can be trained using:
+
+    python train_sync_rgb.py --data_path_videos=<path-of-preprocessed-data> --data_root_kps=<path-of-extracted-keypoints> --checkpoint_dir=<path-to-save-the-trained-model>
+    
+The model can be resumed for training as well. Look at `python train_sync_rgb.py --help` for more details. Also, additional less commonly-used parameters can be set in the `config.py` file.
+
 
 ---
 Licence and Citation

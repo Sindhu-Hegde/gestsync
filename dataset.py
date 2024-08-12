@@ -1,5 +1,5 @@
 import os
-import pickle5 as pickle
+import pickle
 import math
 import numpy as np
 import cv2
@@ -40,6 +40,7 @@ class DataGenerator_RGB(data.Dataset):
 
 		# Get the name of the file
 		fname = self.files[index]
+		# print(fname)
 
 		# Load the frames
 		video, start_frame = self.load_frames(fname)
@@ -103,6 +104,8 @@ class DataGenerator_RGB(data.Dataset):
 				img = input_frames[i]
 
 				face = frame_kp_dict["face"]
+				if face is None:
+					return None, None
 
 				face_kps = []
 				for idx in range(len(face)):
@@ -122,7 +125,6 @@ class DataGenerator_RGB(data.Dataset):
 		except:
 			return None, None
 
-
 		input_frames = np.asarray(input_frames_masked) / 255.		# num_framesx270x480x3 
 		input_frames = np.transpose(input_frames, (3, 0, 1, 2))		# 3xnum_framesx270x480
 		
@@ -133,8 +135,7 @@ class DataGenerator_RGB(data.Dataset):
 			
 		# Load the audio file
 		try:
-			wavpath = fname.replace("vid", "wav")
-			wavpath = wavpath.replace(".avi", ".wav")
+			wavpath = fname.replace(".avi", ".wav")
 			audio = load_wav(wavpath).astype('float32')
 		except:
 			return None, None
