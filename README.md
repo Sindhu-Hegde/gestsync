@@ -4,9 +4,11 @@
 This code is for our paper titled: **GestSync: Determining who is speaking without a talking head** published at BMVC 2023 (oral).<br />
 **Authors**: [Sindhu Hegde](https://sindhu-hegde.github.io), [Andrew Zisserman](https://scholar.google.com/citations?hl=en&user=UZ5wscMAAAAJ) 
 
-|   📝 Paper   |   📑 Project Page    |  🛠 Demo Video  |
-|:-----------:|:-------------------:|:------------------:|
-| [Paper](https://arxiv.org/pdf/2310.05304) | [Website](https://www.robots.ox.ac.uk/~vgg/research/gestsync/) | [Video](https://youtu.be/AAdicSpgcAg) | 
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/gestsync-determining-who-is-speaking-without/gesture-synchronization-on-lrs3-ted)](https://paperswithcode.com/sota/gesture-synchronization-on-lrs3-ted?p=gestsync-determining-who-is-speaking-without)  [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/gestsync-determining-who-is-speaking-without/active-speaker-detection-on-lrs3-ted)](https://paperswithcode.com/sota/active-speaker-detection-on-lrs3-ted?p=gestsync-determining-who-is-speaking-without)  
+
+|   📝 Paper   |   📑 Project Page    |  🤗 Demo   |  🛠 Demo Video  |
+|:-----------:|:-------------------:|:------------------:|:------------------:|
+| [Paper](https://arxiv.org/pdf/2310.05304) | [Website](https://www.robots.ox.ac.uk/~vgg/research/gestsync/) | [Demo](https://huggingface.co/spaces/sindhuhegde/gestsync) | [Video](https://youtu.be/AAdicSpgcAg) | 
 <br />
 
 
@@ -17,6 +19,7 @@ This code is for our paper titled: **GestSync: Determining who is speaking witho
 ------
 Highlights
 -----
+- Try our demo at 🤗 [HuggingFace Spaces](https://huggingface.co/spaces/sindhuhegde/gestsync)
 - The trained network can be used for 2 tasks:
   - **Synchronisation:** Predicting the temporal lags between the audio and visual streams in a video solely based on gestures.
   - **Active Speaker Detection:** Determining "who is speaking" in a multi-speaker scenario without looking at their faces.
